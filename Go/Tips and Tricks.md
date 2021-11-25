@@ -17,8 +17,17 @@ type HandlerFunc func(ResponseWriter, *Request)
 
 func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
 	f(w, r)
-}```
+}
+```
 
 **Build a staticaly-linked binary**
 
 `CGO_ENABLED=0 go build`
+
+**Install the latest version of(included beta)**
+
+```go
+go install golang.org/dl/gotip@latest
+gotip download
+gotip version
+```
