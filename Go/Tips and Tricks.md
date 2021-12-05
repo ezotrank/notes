@@ -13,10 +13,10 @@
 For instance, HandlerFunc is a function and a type, which implements http.Handler interface.
 
 ```go
-type HandlerFunc func(ResponseWriter, *Request)
+type HandlerFunc func (ResponseWriter, *Request)
 
 func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
-	f(w, r)
+f(w, r)
 }
 ```
 
@@ -30,4 +30,43 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
 go install golang.org/dl/gotip@latest
 gotip download
 gotip version
+```
+
+**Dump to asm**
+
+```bash
+go build -o main main.go
+objdump -d main > main.asm
+```
+
+**Using interfaces for testing**
+
+```go
+type DataPersistence interface {
+    SaveData(string, string) error
+    GetData(string) (string, error)
+}
+
+type MockDataPersistence struct {
+    SaveDataFunc func (string, string) error
+    GetDataFunc func (string) (string, error)
+}
+
+func (m MockDataPersistence) SaveData(key, value string) error {
+    return m.SaveDataFunc(key, value)
+}
+
+func (m MockDataPersistence) GetData(key string) (string, error) {
+    return m.GetDataFunc(key)
+}
+
+func TestMyStuff(t *testing.T) {
+    mockPersistor := MockDataPersistence{}
+    mockPersistor.SaveDataFunc = func (key, value string) error {
+        return fmt.Errorf("error to check how your code handles an error")
+    }
+	
+    err := thingToTest(mockPersistor)
+    assert.Nil(t, err)
+}
 ```
