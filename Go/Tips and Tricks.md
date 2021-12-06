@@ -70,3 +70,19 @@ func TestMyStuff(t *testing.T) {
     assert.Nil(t, err)
 }
 ```
+
+**Work with based type inside struct**
+
+```go
+type Arena []Node
+
+func (arena *Arena) Alloc() *Node {
+    if len(*arena) == 0 {
+        *arena = make([]Node, 10000)
+    }
+
+    n := &(*arena)[len(*arena)-1]
+    *arena = (*arena)[:len(*arena)-1]
+    return n
+}
+```
