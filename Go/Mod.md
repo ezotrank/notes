@@ -29,3 +29,7 @@ import (
 
 [link1](https://github.com/go-modules-by-example/index/blob/master/010_tools/README.md)
 [link2](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
+
+**GOPRIVATE**
+
+`go env -w GOPRIVATE=github.com/company-name`
