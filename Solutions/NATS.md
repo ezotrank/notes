@@ -71,3 +71,4 @@ a particular key.
 # Links
 
 - [Docs](https://docs.nats.io)
+- [Contrasting NATS with Apache Kafka](https://itnext.io/contrasting-nats-with-apache-kafka-1d3bdb9aa767)
