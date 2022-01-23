@@ -1,4 +1,6 @@
-# FAQ
+# BASH
+
+## FAQ
 
 **What's the difference between [ and [[** 
 

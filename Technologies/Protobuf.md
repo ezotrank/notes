@@ -1,4 +1,4 @@
-# Proto
+# Protobuf
 
 ## Best Practices
 

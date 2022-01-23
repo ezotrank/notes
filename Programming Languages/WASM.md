@@ -1,4 +1,6 @@
-# FAQ
+# WASM
+
+## FAQ
 
 **In which cases WASM slower that JavaScript**
 

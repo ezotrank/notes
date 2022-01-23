@@ -1,5 +1,7 @@
 # PostgreSQL
 
+## Patterns
+
 **FOR UPDATE SKIP LOCKED**
 
 ```sql
@@ -14,6 +16,8 @@ WHERE id = (
 )
 RETURNING id;
 ```
+
+Links:
 
 [SKIP LOCKED: ONE OF MY FAVORITE 9.5 FEATURES](https://www.cybertec-postgresql.com/en/skip-locked-one-of-my-favorite-9-5-features/)
 [Доводим распределённые действия до конца с использованием простейшего паттерна Saga](https://habr.com/ru/company/ozontech/blog/590709/)
