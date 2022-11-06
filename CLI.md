@@ -1,5 +1,22 @@
 # CLI
 
+tags: #cli #utils
+
+## Send SIGQUIT to quit the process and perform a core dump
+
+`kill -SIGQUIT 8518`
+
+## mitmproxy
+
+Disable mouse
+
+`mitmproxy --set console_mouse=false`
+
+Links:
+
+- [Viewing network traffic calls on IOS real device using MITM Proxy](https://automationhacks.medium.com/viewing-network-traffic-calls-on-ios-real-device-using-mitm-proxy-e413c556466d)
+- [How to Man in the Middle HTTPS Using mitmproxy](https://earthly.dev/blog/mitmproxy/)
+
 ## dig
 
 **Show TXT records in domain**
@@ -18,12 +35,20 @@
 
 `dig google.com +trace`
 
+Links:
 
-**Links:**
-
-[DNS Basics and Building Simple DNS Server in Go](https://medium.com/@openmohan/dns-basics-and-building-simple-dns-server-in-go-6cb8e1cfe461)
+- [DNS Basics and Building Simple DNS Server in Go](https://medium.com/@openmohan/dns-basics-and-building-simple-dns-server-in-go-6cb8e1cfe461)
 
 ## ssh
+
+**Forward gpg-agent**
+
+Links:
+
+- [GPG agent forwarding via SSH](https://rabbithole.wwwdotorg.org/2021/03/03/gpg-agent-fwding-over-ssh.html)
+- [Forwarding gpg-agent to a remote system over SSH](https://wiki.gnupg.org/AgentForwarding)
+
+`echo "test" | gpg --encrypt -r KEY_NAME|gpg --decrypt`
 
 **Local forwarding**
 
@@ -80,7 +105,6 @@ Don't forget add fish to shells here /etc/shells
 
 `networkQuality`
 
-
 ## aws
 
 **Loging into ECR**
@@ -113,3 +137,47 @@ Don't forget add fish to shells here /etc/shells
 **Change hostname**
 
 `sudo scutil --set HostName server1.mynetwork.com`
+
+## migrate
+
+**Dirty database version 1. Fix and force version**
+
+`update schema_migrations set dirty=0, version=CHANGE_FOR_LATEST`
+
+## lsof
+
+**Find who is listenning a port**
+
+`lsof -nP -i4TCP:8081`
+
+## vim
+
+Arrow keys don't work
+
+`:set nocompatible`
+`echo "set nocompatible" >> ~/.exrc`
+`echo "set nocompatible" >> ~/.vimrc`
+
+
+## bash
+
+**Tiny HTTP server**
+
+```bash
+#!/bin/bash
+
+trap "echo Exited!; exit;" SIGINT SIGTERM
+
+PORT="${1:-1337}"
+
+main () {
+    echo "Starting..."
+
+    while true 
+    do
+        printf 'HTTP/1.1 200 OK\n\n%s' "$(cat index.html)" | nc -c -l ${PORT}
+    done
+}
+
+main
+```
