@@ -2,6 +2,26 @@
 
 tags: #cli #utils
 
+
+## GPG
+
+
+```shell
+gpg --full-generate-key
+gpg --list-secret-keys --keyid-format=long
+gpg --armor --export 6E5BF9A995A2F7FBFDD0DFA5F0A76ED9C904D8E0
+gpg --armor --export-secret-key 6E5BF9A995A2F7FBFDD0DFA5F0A76ED9C904D8E0
+```
+
+
+
+
+### Links:
+
+- [# Generating a new GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key)
+
+
+
 ## Send SIGQUIT to quit the process and perform a core dump
 
 `kill -SIGQUIT 8518`
@@ -41,20 +61,101 @@ Links:
 
 ## ssh
 
+**Forward ssh-agent**
+
+
+`echo $SSH_AUTH_SOCK`
+
+```
+Host some-host-name
+	IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+	RemoteForward /run/user/1000/gnupg/S.gpg-agent /Users/user/.gnupg/S.gpg-agent.extra
+```
+
+
 **Forward gpg-agent**
 
 Links:
 
+- [GnuPG agent forwarding Gist](https://gist.github.com/TimJDFletcher/85fafd023c81aabfad57454111c1564d)
 - [GPG agent forwarding via SSH](https://rabbithole.wwwdotorg.org/2021/03/03/gpg-agent-fwding-over-ssh.html)
 - [Forwarding gpg-agent to a remote system over SSH](https://wiki.gnupg.org/AgentForwarding)
 
+
 `echo "test" | gpg --encrypt -r KEY_NAME|gpg --decrypt`
+
+
+Troubleshooting:
+
+- In case having an error `gpg: public key decryption failed: No pinentry` just kill gpg-agent on the host machine `killall gpg-agent` and try one more time.
+- Can't find your private key on the guest machine? `gpg -K` check if the gpg-agent is running on the guest machine `ps aux|grep gpg-agent`; if yes, kill it and re-ssh.
+- Are you still can find the private key on the guest machine? Check the `RemoteForward` on the remote and the local side, also `gpgconf --list-dirs agent-ssh-socket`
+- You also need to disable gpg-agent on the guest machine `echo no-autostart|tee -a  ~/.gnupg/gpg.conf`
+
 
 **Local forwarding**
 
 Any connections from the local 80 port are forwarded to intra.example.com:80
 
 `ssh -L 80:intra.example.com:80 gw.example.com`
+
+**Using gpg key as ssh key**
+
+```sh
+$ cat .gnupg/gpg-agent.conf
+enable-ssh-support
+```
+
+
+```sh
+$ gpg2 -K --with-keygrip
+/home/bexelbie/.gnupg/pubring.kbx
+------------------------------
+sec   rsa2048 2019-03-21 [SC] [expires: 2021-03-20]
+      96F33EA7F4E0F7051D75FC208715AF32191DB135
+      Keygrip = 90E08830BC1AAD225E657AD4FBE638B3D8E50C9E
+uid           [ultimate] Brian Exelbierd
+ssb   rsa2048 2019-03-21 [E] [expires: 2021-03-20]
+      Keygrip = 5FA04ABEBFBC5089E50EDEB43198B4895BCA2136
+ssb   rsa2048 2019-03-21 [A]
+      Keygrip = 7710BA0643CC022B92544181FF2EAC2A290CDC0E
+
+$ echo 7710BA0643CC022B92544181FF2EAC2A290CDC0E >> ~/.gnupg/sshcontrol
+```
+
+```sh
+$ gpgconf --launch gpg-agent
+```
+
+```
+$ SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) ssh-add -L
+```
+
+
+```
+Host host-support-gpg-ssh
+    HostName host-support-gpg-ssh.io
+    VisualHostKey yes
+    ServerAliveInterval 15
+    ServerAliveCountMax 3
+    ControlMaster auto
+    ControlPersist 10m
+    ControlPath /tmp/ssh-%C
+    ForwardAgent yes
+    RemoteForward /home/%r/.gnupg/S.gpg-agent %d/.gnupg/S.gpg-agent.extra
+    StreamLocalBindUnlink yes
+    IdentityAgent %d/.gnupg/S.gpg-agent.ssh
+```
+
+Get your gpg-ssh public key
+
+```sh
+$ gpg --export-ssh-key (whoami)
+```
+
+Links:
+- [How to enable SSH access using a GPG key for authentication](https://opensource.com/article/19/4/gpg-subkeys-ssh)
+- [GPG - SSH setup](https://gist.github.com/mcattarinussi/834fc4b641ff4572018d0c665e5a94d3)
 
 **Remote forwarding**
 
@@ -77,6 +178,21 @@ Option `GatewayPorts yes` should be enabled there _/etc/ssh/sshd_config_.
 `tcpdump -i lo0 port 7089 -vvAls0|rg GET`
 
 ## zsh
+
+Keybinding:
+
+alt+Enter inserts a newline at the cursor position.
+Alf+f/b move the cursor one word left or righ.
+Shift+← and Shift+→ move the cursor one word left or righ.
+Control+D delete one character to the right of the cursor.
+Control+W removes the previous path component
+Control+X copies the current buffer to the system’s clipboard.
+Alt+L lists the contents of the current directory.
+Alt+O opens the file at the cursor in a pager.
+Alt+P adds the string &| less;
+Alt+E edit the current command line in an external editor.
+Alt+S Prepends sudo to the current commandline.
+
 
 **Working with history**
 
