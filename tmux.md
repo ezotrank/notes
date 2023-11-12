@@ -63,6 +63,13 @@ Ctrl + b ] paste contents of buffer_0
 Ctrl + b : enter command mode
 
 
+Windows
+-------
+
+```
+swap-window -t 0
+swap-window -s 3 -t 1
+```
 
 ## Links:
 
